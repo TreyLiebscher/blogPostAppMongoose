@@ -31,9 +31,24 @@ app.use(express.json());
 //       });
 //   });
 
-app.listen(process.env.PORT, () => {
-    console.log(`Your app is listening on port ${PORT}`);
-});
+function runServer(databaseUrl = DATABASE_URL, port = PORT) {
+
+    return new Promise((resolve, reject) => {
+        mongoose.connect(databaseUrl, err => {
+            if (err) {
+                return reject(err);
+            }
+            console.log(`Connected to db: ${databaseUrl}`);
+            app.listen(PORT, () => {
+                resolve(true)
+                console.log(`Your app is listening on port ${port}`);
+            });
+        })
+    })
+}
+
+
+
 
 app.get('/blogPosts', (req, res) => {
     BlogPost.find()
@@ -51,5 +66,11 @@ app.get('/blogPosts', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-    res.status(404).json({message: 'Route not handled'});
+    res.status(404).json({ message: 'Route not handled' });
 });
+
+
+runServer(DATABASE_URL, PORT).catch(err => {
+    console.log('CANNOT START SERVER!')
+    process.exit(1)
+})
