@@ -3,4 +3,4 @@
 exports.DATABASE_URL = process.env.DATABASE_URL ||
 global.DATABASE_URL || 
 'mongodb://localhost/blogpostsapp';
-exports.PORT = 9090;
+exports.PORT = process.env.PORT || 9090;
