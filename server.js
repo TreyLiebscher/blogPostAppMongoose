@@ -143,7 +143,17 @@ app.use("*", function (req, res) {
 });
 
 
-runServer(DATABASE_URL, PORT).catch(err => {
-    console.log('CANNOT START SERVER!')
-    process.exit(1)
-})
+// runServer(DATABASE_URL, PORT).catch(err => {
+//     console.log('CANNOT START SERVER!')
+//     process.exit(1)
+// })
+
+if (require.main === module) {
+    runServer(DATABASE_URL).catch(err => console.error(err));
+}
+
+module.exports = {
+    runServer,
+    app,
+    closeServer
+};
