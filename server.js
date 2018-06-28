@@ -16,6 +16,8 @@ const {
 const app = express();
 app.use(express.json());
 
+let server;
+
 function runServer(databaseUrl = DATABASE_URL, port = PORT) {
     return new Promise((resolve, reject) => {
         mongoose.connect(databaseUrl, err => {
@@ -23,9 +25,12 @@ function runServer(databaseUrl = DATABASE_URL, port = PORT) {
                 return reject(err);
             }
             console.log(`Connected to db: ${databaseUrl}`);
-            app.listen(PORT, () => {
-                resolve(true)
+            server = app.listen(port, () => {
+                resolve();
                 console.log(`Your app is listening on port ${port}`);
+            }).on('error', err => {
+                mongoose.disconnect();
+                reject(err);
             });
         })
     })
