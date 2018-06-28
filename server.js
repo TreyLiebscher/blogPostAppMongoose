@@ -17,7 +17,6 @@ const app = express();
 app.use(express.json());
 
 function runServer(databaseUrl = DATABASE_URL, port = PORT) {
-
     return new Promise((resolve, reject) => {
         mongoose.connect(databaseUrl, err => {
             if (err) {
@@ -30,6 +29,20 @@ function runServer(databaseUrl = DATABASE_URL, port = PORT) {
             });
         })
     })
+}
+
+function closeServer() {
+    return mongoose.disconnect().then(() => {
+        return new Promise((resolve, reject) => {
+            console.log("Closing server");
+            server.close(err => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve();
+            });
+        });
+    });
 }
 
 
